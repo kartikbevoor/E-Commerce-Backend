@@ -6,5 +6,7 @@ type Order struct {
 	IsPaid      bool
 	PaymentId   int
 	CustomerId  int
+	Note        string
 	ProductsIds []int
+	Amount      int
 }
