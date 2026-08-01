@@ -1,9 +1,9 @@
 package payments
 
 type Payments struct {
-	Id         int
+	ID         int
 	Type       string
-	CustomerId int
-	Amount     int
+	CustomerID int
+	Amount     int64
 	OrderId    int
 }

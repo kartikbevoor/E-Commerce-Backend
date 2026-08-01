@@ -1,12 +1,8 @@
 package inventory
 
-type Order struct {
-	Id          int
-	IsDelivered bool
-	IsPaid      bool
-	PaymentId   int
-	CustomerId  int
-	Note        string
-	ProductsIds []int
-	Amount      int
+type Inventory struct {
+	Id           int
+	ProductID    int
+	Quantity     int
+	SoldQuantity int
 }

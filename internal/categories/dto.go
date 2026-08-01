@@ -1,11 +1,11 @@
 package categories
 
-type CreateCategoriesRequest struct {
-	Name        string
-	Description string
+type CreateCategoryRequest struct {
+	Name        string `json:"name" validate:"required,min=3,max=30"`
+	Description string `json:"description" validate:"required,min=10,max=200"`
 }
 
-type CreateCategoriesResponse struct {
-	Name        string
-	Description string
+type CreateCategoryResponse struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }

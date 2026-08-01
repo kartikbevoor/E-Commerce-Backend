@@ -1,10 +1,11 @@
 package products
 
 type Products struct {
-	Id          int
+	ID          int
 	Name        string
-	CategoryId  int
-	VendorId    int
+	CategoryID  int
+	VendorID    int
+	Price       int64
 	Description string
-	ReviewsIds  []int
+	ReviewsIDs  []int
 }

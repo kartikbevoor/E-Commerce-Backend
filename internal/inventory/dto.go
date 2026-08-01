@@ -1,14 +1,13 @@
 package inventory
 
-// Before proceding make your objectives clear
-
 type CreateInventoryRequest struct {
-	Id          int
-	IsDelivered bool
-	IsPaid      bool
-	PaymentId   int
-	CustomerId  int
-	Note        string
-	ProductsIds []int
-	Amount      int
+	ProductID int `json:"product_id" validate:"gt=0"`
+	Quantity  int `json:"quantity" validate:"gt=0"`
+}
+
+type CreateInventoryResponse struct {
+	ID           int `json:"id"`
+	ProductID    int `json:"product_id"`
+	Quantity     int `json:"quantity"`
+	SoldQuantity int `json:"sold_quantity"`
 }
