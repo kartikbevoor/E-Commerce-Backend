@@ -1,14 +1,14 @@
 package admin
 
-import "time"
+type Permissions string
+
+const (
+	RoleCustomer Permissions = "Level1"
+	RoleVendor   Permissions = "Level2"
+	RoleAdmin    Permissions = "Level3"
+)
 
 type Admin struct {
-	Id        int
-	Name      string
-	Age       int
-	Email     string
-	Username  string
-	Password  string
-	CreatedAt time.Time
-	// Address  Address
+	UserID      int64
+	Permissions Permissions
 }

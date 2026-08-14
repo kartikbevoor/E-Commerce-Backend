@@ -14,6 +14,7 @@ type User struct {
 	ID           int
 	Name         string
 	Email        string
+	UserName     string
 	PasswordHash string
 	Role         Role
 	IsVerified   bool

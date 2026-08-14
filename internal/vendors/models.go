@@ -1,12 +1,9 @@
 package vendors
 
 type Vendor struct {
-	Id       int
-	Name     string
-	Age      int
-	Email    string
-	Username string
-	Password string
-	// Address  Address
-	// Products []Products
+	UserID              int64
+	StoreName           string
+	GstNumber           string
+	PanNumber           string
+	BusinessDescription string
 }
