@@ -9,6 +9,6 @@ const (
 )
 
 type Admin struct {
-	UserID      int64
-	Permissions Permissions
+	UserID      int64       `db:"user_id"`
+	Permissions Permissions `db:"permissions"`
 }

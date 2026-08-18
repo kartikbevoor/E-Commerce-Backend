@@ -3,15 +3,15 @@ package user
 import "time"
 
 type CreateUserRequest struct {
-	Name         string `json:"name" validate:"required"`
-	Email        string `json:"email" validate:"email"`
-	UserName     string `json:"username" validate:"required,min=4,max=30"`
-	PasswordHash string `json:"password_hash" validate:"required"`
-	Role         Role   `json:"role" validate:"required"`
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"email"`
+	UserName string `json:"username" validate:"required,min=4,max=30"`
+	Password string `json:"password" validate:"required"`
+	Role     Role   `json:"role" validate:"required"`
 }
 
 type CreateUserResponse struct {
-	ID         int       `json:"id"`
+	ID         int64     `json:"id"`
 	Name       string    `josn:"name"`
 	Email      string    `json:"email"`
 	Role       Role      `json:"role"`

@@ -5,20 +5,20 @@ import "time"
 type Role string
 
 const (
-	RoleCustomer Role = "Customer"
-	RoleVendor   Role = "Vendor"
-	RoleAdmin    Role = "Admin"
+	RoleCustomer Role = "customer"
+	RoleVendor   Role = "vendor"
+	RoleAdmin    Role = "admin"
 )
 
 type User struct {
-	ID           int
-	Name         string
-	Email        string
-	UserName     string
-	PasswordHash string
-	Role         Role
-	IsVerified   bool
-	IsActive     bool
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	ID         int64     `db:"id"`
+	Name       string    `db:"name"`
+	Email      string    `db:"email"`
+	Username   string    `db:"username"`
+	Password   string    `db:"password"`
+	Role       Role      `db:"role"`
+	IsVerified bool      `db:"is_verified"`
+	IsActive   bool      `db:"is_active"`
+	CreatedAt  time.Time `db:"created_at"`
+	UpdatedAt  time.Time `db:"updated_at"`
 }
