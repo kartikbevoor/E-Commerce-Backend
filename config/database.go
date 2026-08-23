@@ -1,19 +1,35 @@
 package config
 
 import (
+	"context"
 	"database/sql"
-	"log"
-	"os"
+	"fmt"
+	"time"
 )
 
-func GetDBConnection() *sql.DB {
-	driverName := os.Getenv("DB_DRIVER")
-	dataSourceName := os.Getenv("DB_SOURCE")
-
-	Db, err := sql.Open(driverName, dataSourceName)
+func NewDatabase(cfg DatabaseConfig) (*sql.DB, error) {
+	db, err := sql.Open(cfg.Driver, cfg.DSN)
 	if err != nil {
-		log.Println("Unable to connect to database")
+		return nil, fmt.Errorf("open database: %w", err)
 	}
 
-	return Db
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		5*time.Second,
+	)
+	defer cancel()
+
+	if err := db.PingContext(ctx); err != nil {
+		db.Close()
+
+		return nil, fmt.Errorf("ping database: %w", err)
+	}
+
+	// Connection pool configuration.
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(30 * time.Minute)
+	db.SetConnMaxIdleTime(5 * time.Minute)
+
+	return db, nil
 }

@@ -1,25 +1,58 @@
 package config
 
 import (
-	"database/sql"
-	"log"
+	"fmt"
+	"os"
 
 	"github.com/joho/godotenv"
 )
 
-type Config struct {
-	Db *sql.DB
+type ServerConfig struct {
+	Port string
 }
 
-func GetConfigurations() *Config {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("Error Loading .env file.")
+type DatabaseConfig struct {
+	Driver string
+	DSN    string
+}
+
+type Config struct {
+	Server   ServerConfig
+	Database DatabaseConfig
+}
+
+func Load() (Config, error) {
+	// Load .env during local development.
+	// In production, environment variables can be provided
+	// directly by Docker/Kubernetes/cloud infrastructure.
+	_ = godotenv.Load()
+
+	cfg := Config{
+		Server: ServerConfig{
+			Port: getEnv("SERVER_PORT", "8080"),
+		},
+		Database: DatabaseConfig{
+			Driver: os.Getenv("DB_DRIVER"),
+			DSN:    os.Getenv("DB_DSN"),
+		},
 	}
 
-	cfg := &Config{
-		Db: GetDBConnection(),
+	if cfg.Database.Driver == "" {
+		return Config{}, fmt.Errorf("DB_DRIVER is required")
 	}
 
-	return cfg
+	if cfg.Database.DSN == "" {
+		return Config{}, fmt.Errorf("DB_DSN is required")
+	}
+
+	return cfg, nil
+}
+
+func getEnv(key, fallback string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return fallback
+	}
+
+	return value
 }
