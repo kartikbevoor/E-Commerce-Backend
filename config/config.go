@@ -29,12 +29,9 @@ func Load() (Config, error) {
 
 	cfg := Config{
 		Server: ServerConfig{
-			Port: getEnv("SERVER_PORT", "8080"),
+			Port: LoadServerPort(),
 		},
-		Database: DatabaseConfig{
-			Driver: os.Getenv("DB_DRIVER"),
-			DSN:    os.Getenv("DB_DSN"),
-		},
+		Database: LoadDatabase(),
 	}
 
 	if cfg.Database.Driver == "" {
@@ -55,4 +52,22 @@ func getEnv(key, fallback string) string {
 	}
 
 	return value
+}
+
+func LoadDatabase() DatabaseConfig {
+	var Database DatabaseConfig
+
+	Database.Driver = os.Getenv("DB_DRIVER")
+	Database.DSN = os.Getenv("DB_DSN")
+
+	return Database
+}
+
+func LoadServerPort() string {
+
+	//var Port string
+	//Port := getEnv("SERVER_PORT", "8080")
+	//return Port
+
+	return getEnv("SERVER_PORT", "8080")
 }

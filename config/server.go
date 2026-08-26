@@ -7,19 +7,19 @@ import (
 )
 
 type Server struct {
-	cfg    Config
-	db     *sql.DB
-	router *chi.Mux
+	Cfg    Config
+	Db     *sql.DB
+	Router *chi.Mux
 }
 
 func NewServer(cfg Config, db *sql.DB) *Server {
 	return &Server{
-		cfg:    cfg,
-		db:     db,
-		router: chi.NewRouter(),
+		Cfg:    cfg,
+		Db:     db,
+		Router: chi.NewRouter(),
 	}
 }
 
-func (s *Server) Router() *chi.Mux {
-	return s.router
+func (s *Server) GetRouter() *chi.Mux {
+	return s.Router
 }
