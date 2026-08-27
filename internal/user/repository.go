@@ -6,13 +6,13 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func RegistorUser(tx *sqlx.Tx, user CreateUserRequest) (error, sql.Result) {
+func RegisterUser(tx *sqlx.Tx, user CreateUserRequest) (sql.Result, error) {
 	query := `INSERT INTO user(name,email,username,password,role) VALUES(name,email,username,password,role)`
 
 	result, err := tx.NamedExec(query, user)
 	if err != nil {
-		return err, result
+		return result, err
 	}
 
-	return nil, result
+	return result, err
 }

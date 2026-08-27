@@ -1,47 +1,31 @@
 package server
 
 import (
+	"context"
 	"ecommerce-backend/config"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
 )
 
 type Server struct {
-	Cfg    config.Config
-	Db     *sqlx.DB
-	Router *chi.Mux
+	Cfg        config.Config
+	Db         *sqlx.DB
+	Router     *chi.Mux
+	httpServer *http.Server
 }
 
 func main() {
 
-	//Server := NewServer()
-
-	cfg, err := config.Load()
-	if err != nil {
-		log.Fatalf("failed to load configuration: %v", err)
-	}
-
-	db, err := config.NewDatabase(cfg.Database)
-	if err != nil {
-		log.Fatalf("failed to initialize database: %v", err)
-	}
-	defer db.Close()
-
-	app := config.NewServer(cfg, db)
-
-	httpServer := &http.Server{
-		Addr:    ":" + cfg.Server.Port,
-		Handler: app.GetRouter(),
-	}
-
-	log.Printf("server starting on port %s", cfg.Server.Port)
-
-	if err := httpServer.ListenAndServe(); err != nil {
-		log.Fatalf("server stopped: %v", err)
-	}
+	Server := NewServer()
+	Server.Init()
+	Server.Run()
 }
 
 func NewServer() *Server {
@@ -78,4 +62,61 @@ func (s *Server) NewDatabase() {
 	// s.Db.SetMaxOpenConns(10)
 	// s.Db.SetMaxIdleConns(10)
 	// s.Db.SetConnMaxLifetime(10)
+}
+
+func (s *Server) Run() {
+	s.httpServer = &http.Server{
+		Addr:    ":" + s.Cfg.Server.Port,
+		Handler: s.Router,
+	}
+
+	log.Printf("server starting on port %s", s.Cfg.Server.Port)
+
+	if err := s.httpServer.ListenAndServe(); err != nil {
+		log.Fatalf("server stopped: %v", err)
+	}
+}
+
+func start(httpServer *http.Server) {
+
+	err := httpServer.ListenAndServe()
+	if err != nil {
+		log.Fatalf("server stopped: %v", err)
+	}
+}
+
+func gracefulShutdown(ctx context.Context, s *Server) error {
+	quit := make(chan os.Signal, 1)
+
+	signal.Notify(
+		quit,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+	)
+
+	<-quit
+
+	log.Println("Shutting down...")
+
+	ctx, shutdown := context.WithTimeout(
+		ctx,
+		10*time.Second, // s.Cfg.Api.GracefulTimeout*time.Second,
+	)
+	defer shutdown()
+
+	err := s.httpServer.Shutdown(ctx)
+	if err != nil {
+		log.Println(err)
+	}
+	s.closeResources()
+
+	return nil
+}
+
+func (s *Server) closeResources() { // ctx context.Context pass this as parameter for later resources
+	if s.Db != nil {
+		if err := s.Db.Close(); err != nil {
+			log.Printf("error closing database: %v", err)
+		}
+	}
 }

@@ -17,14 +17,23 @@ func UserRegistration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tx, err := config.Server.Db.Begin()
+	//tx, err := config.DB.Beginx() //config.Server.Db.Begin()
+	tx, err := config.DB.Beginx()
 	if err != nil {
 		log.Println("Failed to start transaction, err:", err)
 	}
 
-	result, err := RegistorUser(tx, NewUser)
+	result, err := RegisterUser(tx, NewUser)
+	if err != nil {
+		log.Println("Failed to registor user")
+		http.Error(w, "Failed to registor user, err:", http.StatusInternalServerError)
+		return
+	}
+
+	var CreateUserResponse CreateUserResponse
+
+	CreateUserResponse.ID, err = result.LastInsertId()
 	if err != nil {
 
 	}
-
 }

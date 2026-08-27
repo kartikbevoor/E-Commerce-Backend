@@ -20,14 +20,6 @@ func SetDbClient(db *sqlx.DB) {
 	DB = db
 }
 
-func NewServer(cfg Config, db *sql.DB) *Server {
-	return &Server{
-		Cfg:    cfg,
-		Db:     db,
-		Router: chi.NewRouter(),
-	}
-}
-
 func (s *Server) GetRouter() *chi.Mux {
 	return s.Router
 }
