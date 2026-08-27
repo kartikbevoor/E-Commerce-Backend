@@ -1,17 +1,17 @@
 package server
 
 import (
-	"database/sql"
 	"ecommerce-backend/config"
 	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/jmoiron/sqlx"
 )
 
 type Server struct {
 	Cfg    config.Config
-	Db     *sql.DB
+	Db     *sqlx.DB
 	Router *chi.Mux
 }
 
@@ -58,6 +58,8 @@ func NewServer() *Server {
 
 func (s *Server) Init() {
 	s.NewDatabase()
+	config.SetDbClient(s.Db)
+	config.SetConfig(s.Cfg)
 }
 
 func (s *Server) NewDatabase() {
@@ -65,7 +67,7 @@ func (s *Server) NewDatabase() {
 		log.Fatal("please fill in database credentials in .env file or set in environment variable")
 	}
 
-	db, err := sql.Open(s.Cfg.Database.Driver, s.Cfg.Database.DSN)
+	db, err := sqlx.Open(s.Cfg.Database.Driver, s.Cfg.Database.DSN)
 	if err != nil {
 		log.Fatal(err)
 	}

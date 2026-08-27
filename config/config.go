@@ -21,6 +21,9 @@ type Config struct {
 	Database DatabaseConfig
 }
 
+// Global variable
+var Cfg Config
+
 func Load() (Config, error) {
 	// Load .env during local development.
 	// In production, environment variables can be provided
@@ -52,6 +55,10 @@ func getEnv(key, fallback string) string {
 	}
 
 	return value
+}
+
+func SetConfig(cfg Config) {
+	Cfg = cfg
 }
 
 func LoadDatabase() DatabaseConfig {
